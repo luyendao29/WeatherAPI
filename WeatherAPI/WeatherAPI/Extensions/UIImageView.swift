@@ -13,7 +13,6 @@ extension UIImageView {
             if let data = try?  Data(contentsOf: url) {
                 DispatchQueue.main.async {
                     self.image = UIImage(data: data)
-                  
                 }
             }
         }

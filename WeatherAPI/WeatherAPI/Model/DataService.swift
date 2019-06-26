@@ -23,7 +23,6 @@ class DataService {
                 
                 DispatchQueue.main.async {
                     completedHandle(recivedData)
-                    print(recivedData)
                 }
             } catch {
                 print(error)

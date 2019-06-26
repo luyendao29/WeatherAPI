@@ -11,7 +11,6 @@ import UIKit
 class CustomTableViewCell: UITableViewCell {
     
     @IBOutlet weak var iconImage: UIImageView!
-    
     //day
     @IBOutlet weak var date_epochLabel: UILabel!
     //toc do gio
