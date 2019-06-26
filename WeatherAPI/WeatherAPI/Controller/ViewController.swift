@@ -10,13 +10,14 @@ import UIKit
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
+    @IBOutlet weak var tableView: UITableView!
     var totalDataWeather: Weather?
     
     @IBOutlet weak var tableview: UITableView!
     
     @IBOutlet weak var nameLabel: UILabel!
     
-//    @IBOutlet weak var countryLabel: UILabel!
+    @IBOutlet weak var countryLabel: UILabel!
     
     @IBOutlet weak var last_updatedLabel: UILabel!
     
@@ -38,8 +39,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func display() {
-        nameLabel.text = (totalDataWeather?.location.name)! + " - " + (totalDataWeather?.location.country)!
-        //countryLabel.text = totalDataWeather?.location.country
+        nameLabel.text = totalDataWeather?.location.name
+        countryLabel.text = totalDataWeather?.location.country
         last_updatedLabel.text = "Last update: " + (totalDataWeather?.current.last_updated)!
     }
     
@@ -59,9 +60,27 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         cell.maxwind_kphLabel.text = String(Int((totalDataWeather?.forecast.forecastday[indexPath.row].day.maxwind_kph)!)) + " kph"
         cell.avgtemp_fLabel.text = String(Int((totalDataWeather?.forecast.forecastday[indexPath.row].day.avgtemp_f)!)) + " %"
         cell.temp_cLabel.text = String(Int((totalDataWeather?.forecast.forecastday[indexPath.row].day.mintemp_c)!)) + " - " + String(Int((totalDataWeather?.forecast.forecastday[indexPath.row].day.maxtemp_c)!)) + " º C"
-        cell.iconImage.imageUrlString(urlString: (totalDataWeather?.forecast.forecastday[indexPath.row].day.condition.icon)!, indexpath: indexPath)
+//        cell.iconImage.imageUrlString(urlString: (totalDataWeather?.forecast.forecastday[indexPath.row].day.condition.icon)!, indexpath: indexPath)
+//        print(totalDataWeather?.forecast.forecastday[indexPath.row].day.condition.icon)
+        let iconURL = totalDataWeather?.forecast.forecastday[indexPath.row].day.condition.icon ?? ""
+        
+        downloadImageInCell(at: indexPath, with: "https:\(iconURL)")
         return cell
     }
     
+    
+    func downloadImageInCell(at indexPath: IndexPath, with urlString: String) {
+        print(urlString)
+        guard let url = URL(string: urlString) else {return}
+        DispatchQueue.global().async {
+            if let data = try?  Data(contentsOf: url) {
+                DispatchQueue.main.async {
+                    if let cell = self.tableView.cellForRow(at: indexPath) as? CustomTableViewCell {
+                        cell.iconImage.image = UIImage(data: data)
+                    }
+                }
+            }
+        }
+    }
     
 }
